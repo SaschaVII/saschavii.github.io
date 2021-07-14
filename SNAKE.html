@@ -1,0 +1,318 @@
+<html>
+
+<head>
+<style>
+h1 {
+	font-size: 40px;
+}
+
+canvas {
+	border: 2px solid black;
+	padding: 4px;
+}
+</style>
+<script>
+
+// Global Variables
+var canvas;
+var ctx;
+var interval;
+var counter = 0;
+
+var cellCount = 20;
+var cellSize;
+
+var food_position = [0, 0];
+
+// snake Object
+var snake = {
+    cells: [[Math.floor(cellCount/2), Math.floor(cellCount/2)]],    // starting position
+    movement_direction: "none",
+    previous_movement_direction: "none",
+    growing_queue: 0,
+
+    exportSnake: function() {
+    	for(i = 0; i < this.cells.length; i++) {
+    		var index_x = this.cells[i][0];
+    		var index_y = this.cells[i][1];
+
+    		grid.current[index_x][index_y] = 1;
+    	}
+    },
+
+    move: function() {
+
+    	if(this.movement_direction == "none") {
+    		return;
+    	}
+
+        if(this.movement_direction == "right") {
+        	if(this.previous_movement_direction != "left") {
+        		this.moveRight();
+                this.previous_movement_direction = "right";
+                return;
+        	}
+            else {
+		        movement_direction = this.previous_movement_direction;
+        	    this.moveLeft();
+        	    return;
+            }
+        }
+
+
+        if(this.movement_direction == "left") {
+        	if(this.previous_movement_direction != "right") {
+				this.moveLeft();
+        	    this.previous_movement_direction = "left";
+        	    return;
+        	}
+		    else {
+				movement_direction = this.previous_movement_direction;
+				this.moveRight();
+				return;
+            }
+        }
+
+
+        if(this.movement_direction == "down") {
+        	if(this.previous_movement_direction != "up") {
+        		this.moveDown();
+        	    this.previous_movement_direction = "down";
+        	    return;
+        	}
+			else {
+				movement_direction = this.previous_movement_direction;
+				this.moveUp();
+				return;
+			}
+        }
+
+
+        if(this.movement_direction == "up") {
+        	if(this.previous_movement_direction != "down") {
+        		this.moveUp();
+				this.previous_movement_direction = "up";
+				return;
+        	}
+			else {
+				movement_direction = this.previous_movement_direction;
+				this.moveDown();
+				return;
+            }
+        }
+    },
+
+    moveRight: function() {
+		var next_index_x = this.cells[this.cells.length-1][0] + 1;
+		var next_index_y = this.cells[this.cells.length-1][1];
+
+		if(this.checkNextCell(next_index_x, next_index_y)) {
+			this.cells[this.cells.length] = [next_index_x, next_index_y];
+			if(this.growing_queue > 0) {this.growing_queue--;}
+			else {this.cells.shift();}
+		}
+    },
+
+    moveLeft: function() {
+    	var next_index_x = this.cells[this.cells.length-1][0] - 1;
+    	var next_index_y = this.cells[this.cells.length-1][1];
+
+		if(this.checkNextCell(next_index_x, next_index_y)) {
+			this.cells[this.cells.length] = [next_index_x, next_index_y];
+			if(this.growing_queue > 0) {this.growing_queue--;}
+			else {this.cells.shift();}
+		}
+    },
+
+	moveDown: function() {
+		var next_index_x = this.cells[this.cells.length-1][0];
+		var next_index_y = this.cells[this.cells.length-1][1] + 1;
+
+		if(this.checkNextCell(next_index_x, next_index_y)) {
+			this.cells[this.cells.length] = [next_index_x, next_index_y];
+			if(this.growing_queue > 0) {this.growing_queue--;}
+			else {this.cells.shift();}
+		}
+    },
+
+	moveUp: function() {
+		var next_index_x = this.cells[this.cells.length-1][0];
+		var next_index_y = this.cells[this.cells.length-1][1] - 1;
+
+		if(this.checkNextCell(next_index_x, next_index_y)) {
+			this.cells[this.cells.length] = [next_index_x, next_index_y];
+			if(this.growing_queue > 0) {this.growing_queue--;}
+			else {this.cells.shift();}
+		}	
+    },
+
+    checkNextCell: function(next_index_x, next_index_y) {
+        // out of bounds
+        if(next_index_x >= cellCount || next_index_y >= cellCount) {gameOver(); return 0;}
+        if(next_index_x < 0 || next_index_y < 0) {gameOver(); return 0;}
+
+        
+        // hit snake tail
+        var start = 1;
+        if (this.growing_queue > 0) {start = 0;}
+
+        for(i = start; i < this.cells.length; i++) {
+        	if(this.cells[i][0] == next_index_x && this.cells[i][1] == next_index_y) {
+        		gameOver();
+        		return 0;
+        	}
+        }
+
+
+        // hit food
+        if(grid.current[next_index_x][next_index_y] == 2) {
+        	this.growing_queue++;
+        	food.generateRandomPosition();
+        	return 1;
+        }
+        
+
+        // hit nothing
+        return 1;
+    }
+};
+
+// grid Object
+var grid = {
+	current: [],
+	nextIteration: [],
+	
+	fillGrids: function() {
+		for(index_x = 0; index_x < cellCount; index_x++) {
+			this.current[index_x] = [];
+			this.nextIteration[index_x] = [];
+			for(index_y = 0; index_y < cellCount; index_y++) {
+				this.current[index_x][index_y] = 0;
+				this.nextIteration[index_x][index_y] = 0;
+			}
+		}
+	},
+
+	drawGrid: function() {
+		var position_x;
+		var position_y;
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // draw Grid from current array
+	    for(index_x = 0; index_x < cellCount; index_x++) {
+			for(index_y = 0; index_y < cellCount; index_y++) {
+				// if snake cell (value 1)
+	    		if(this.current[index_x][index_y] == 1) {
+	    			position_x = index_x*cellSize;
+	    			position_y = index_y*cellSize;
+	    			ctx.fillStyle = "green";
+	    			ctx.fillRect(position_x, position_y, cellSize, cellSize);
+	    		}
+	    		
+	    		// if food cell (value 2)
+	    		if(this.current[index_x][index_y] == 2) {
+	    			position_x = index_x*cellSize;
+	    			position_y = index_y*cellSize;
+	    			ctx.fillStyle = "red";
+	    			ctx.fillRect(position_x+8, position_y+8, cellSize-16, cellSize-16);
+	    		}
+	    	}
+	    }
+	    // clear Grid
+	    this.fillGrids();
+	}
+};
+
+// food Object
+var food = {
+	position: [0, 0],
+
+	generateRandomPosition: function() {
+        var random_index_x = Math.floor(Math.random()*cellCount);
+        var random_index_y = Math.floor(Math.random()*cellCount);
+        this.position = [random_index_x, random_index_y];
+	},
+    
+    exportPosition: function() {
+        grid.current[this.position[0]][this.position[1]] = 2;
+    }
+};
+
+// Main entry point for program
+function Main() {
+	// Add event listerners
+    document.addEventListener("keydown", keyDown);
+
+	canvas = document.getElementById("canvas_1");
+	ctx = canvas.getContext("2d");
+	
+	// calculate cellSize
+	cellSize = canvas.width/cellCount;
+	
+	grid.fillGrids();    // initial grid creation
+	food.generateRandomPosition();
+	food.exportPosition();
+	snake.exportSnake();
+	grid.drawGrid();
+
+
+	interval = setInterval(nextTick, 100);
+}
+
+function nextTick() {
+	food.exportPosition();
+	snake.move();
+	snake.exportSnake();
+	grid.drawGrid();
+	updateScore();
+}
+
+function updateScore() {
+    document.getElementById("title").innerHTML = snake.cells.length;
+}
+
+function gameOver() {
+	clearInterval(interval);
+    
+    setTimeout(gameOverText, 50);
+}
+
+function gameOverText() {
+	ctx.font = "30px Comic Sans MS";
+	ctx.textAlign = "center";
+	ctx.fillStyle = "red";
+    ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
+}
+
+// EVENTS
+function keyDown(e) {
+	if(e.keyCode == "37") {
+		snake.movement_direction = "left";
+	}
+
+	if(e.keyCode == "38") {
+		snake.movement_direction = "up";
+	}
+
+	if(e.keyCode == "39") {
+		snake.movement_direction = "right";
+	}
+
+	if(e.keyCode == "40") {
+		snake.movement_direction = "down";
+	}
+}
+
+</script>
+</head>
+
+<body>
+<center>
+<h1 id="title">SNAKE</h1>
+<canvas id="canvas_1" height="800px" width="800px"></canvas>
+</center>
+<script>Main();</script>
+</body>
+
+</html>
