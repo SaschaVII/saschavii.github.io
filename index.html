@@ -1,319 +1,149 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<head>
-<style>
-h1 {
-	font-size: 40px;
-}
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-canvas {
-	border: 2px solid black;
-	padding: 4px;
-}
-</style>
-<script>
+    <title>Magic Cards</title>
+  </head>
+  <body>
 
-// Global Variables
-var canvas;
-var ctx;
-var interval;
-var counter = 0;
+    <div style="padding: 100px;">
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">Number</th>
+          <th scope="col">Suit</th>
+        </tr>
+      </thead>
+      <tbody class="table-primary">
+        <tr>
+          <td>
+            <select name="number1" id="number1">
+              <option value="0">2</option>
+              <option value="1">3</option>
+              <option value="2">4</option>
+              <option value="3">5</option>
+              <option value="4">6</option>
+              <option value="5">7</option>
+              <option value="6">8</option>
+              <option value="7">9</option>
+              <option value="8">10</option>
+              <option value="9">Jack</option>
+              <option value="10">Queen</option>
+              <option value="11">King</option>
+              <option value="12">Ace</option>
+            </select>
+          </td>
+          <td>
+            <select name="suit1" id="suit1">
+              <option value="0">Clubs &clubs;</option>
+              <option value="1">Diamonds &diams;</option>
+              <option value="2">Hearts &hearts;</option>
+              <option value="3">Spades &spades;</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <select name="number2" id="number2">
+              <option value="0">2</option>
+              <option value="1">3</option>
+              <option value="2">4</option>
+              <option value="3">5</option>
+              <option value="4">6</option>
+              <option value="5">7</option>
+              <option value="6">8</option>
+              <option value="7">9</option>
+              <option value="8">10</option>
+              <option value="9">Jack</option>
+              <option value="10">Queen</option>
+              <option value="11">King</option>
+              <option value="12">Ace</option>
+            </select>
+          </td>
+          <td>
+            <select name="suit2" id="suit2">
+              <option value="0">Clubs &clubs;</option>
+              <option value="1">Diamonds &diams;</option>
+              <option value="2">Hearts &hearts;</option>
+              <option value="3">Spades &spades;</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <select name="number3" id="number3">
+              <option value="0">2</option>
+              <option value="1">3</option>
+              <option value="2">4</option>
+              <option value="3">5</option>
+              <option value="4">6</option>
+              <option value="5">7</option>
+              <option value="6">8</option>
+              <option value="7">9</option>
+              <option value="8">10</option>
+              <option value="9">Jack</option>
+              <option value="10">Queen</option>
+              <option value="11">King</option>
+              <option value="12">Ace</option>
+            </select>
+          </td>
+          <td>
+            <select name="suit3" id="suit3">
+              <option value="0">Clubs &clubs;</option>
+              <option value="1">Diamonds &diams;</option>
+              <option value="2">Hearts &hearts;</option>
+              <option value="3">Spades &spades;</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <select name="number4" id="number4">
+              <option value="0">2</option>
+              <option value="1">3</option>
+              <option value="2">4</option>
+              <option value="3">5</option>
+              <option value="4">6</option>
+              <option value="5">7</option>
+              <option value="6">8</option>
+              <option value="7">9</option>
+              <option value="8">10</option>
+              <option value="9">Jack</option>
+              <option value="10">Queen</option>
+              <option value="11">King</option>
+              <option value="12">Ace</option>
+            </select>
+          </td>
+          <td>
+            <select name="suit4" id="suit4">
+              <option value="0">Clubs &clubs;</option>
+              <option value="1">Diamonds &diams;</option>
+              <option value="2">Hearts &hearts;</option>
+              <option value="3">Spades &spades;</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot class=" table-secondary">
+        <tr>
+          <td id="txt1" style="text-align: center;" class="lead">-</td>
+          <td id="txt2" style="text-align: center;" class="lead">-</td>
+        </tr>
+        <tr>
+          <td colspan="2" style="background-color: white; text-align: center; padding: 0px;"><button type="button" class="btn btn-dark" style="width: 100%;" id="btn" onclick="buttonClicked()">Read my mind</button></td>
+        </tr>
+      </tfoot>
+    </table>
+    </div>
 
-var cellCount = 20;
-var cellSize;
-
-var food_position = [0, 0];
-
-// snake Object
-var snake = {
-    cells: [[Math.floor(cellCount/2), Math.floor(cellCount/2)]],    // starting position
-    movement_direction: "none",
-    previous_movement_direction: "none",
-    growing_queue: 0,
-
-    exportSnake: function() {
-    	for(i = 0; i < this.cells.length; i++) {
-    		var index_x = this.cells[i][0];
-    		var index_y = this.cells[i][1];
-
-    		grid.current[index_x][index_y] = 1;
-    	}
-    },
-
-    move: function() {
-
-    	if(this.movement_direction == "none") {
-    		return;
-    	}
-
-        if(this.movement_direction == "right") {
-        	if(this.previous_movement_direction != "left") {
-        		this.moveRight();
-                this.previous_movement_direction = "right";
-                return;
-        	}
-            else {
-		        movement_direction = this.previous_movement_direction;
-        	    this.moveLeft();
-        	    return;
-            }
-        }
-
-
-        if(this.movement_direction == "left") {
-        	if(this.previous_movement_direction != "right") {
-				this.moveLeft();
-        	    this.previous_movement_direction = "left";
-        	    return;
-        	}
-		    else {
-				movement_direction = this.previous_movement_direction;
-				this.moveRight();
-				return;
-            }
-        }
-
-
-        if(this.movement_direction == "down") {
-        	if(this.previous_movement_direction != "up") {
-        		this.moveDown();
-        	    this.previous_movement_direction = "down";
-        	    return;
-        	}
-			else {
-				movement_direction = this.previous_movement_direction;
-				this.moveUp();
-				return;
-			}
-        }
-
-
-        if(this.movement_direction == "up") {
-        	if(this.previous_movement_direction != "down") {
-        		this.moveUp();
-				this.previous_movement_direction = "up";
-				return;
-        	}
-			else {
-				movement_direction = this.previous_movement_direction;
-				this.moveDown();
-				return;
-            }
-        }
-    },
-
-    moveRight: function() {
-		var next_index_x = this.cells[this.cells.length-1][0] + 1;
-		var next_index_y = this.cells[this.cells.length-1][1];
-
-		if(this.checkNextCell(next_index_x, next_index_y)) {
-			this.cells[this.cells.length] = [next_index_x, next_index_y];
-			if(this.growing_queue > 0) {this.growing_queue--;}
-			else {this.cells.shift();}
-		}
-    },
-
-    moveLeft: function() {
-    	var next_index_x = this.cells[this.cells.length-1][0] - 1;
-    	var next_index_y = this.cells[this.cells.length-1][1];
-
-		if(this.checkNextCell(next_index_x, next_index_y)) {
-			this.cells[this.cells.length] = [next_index_x, next_index_y];
-			if(this.growing_queue > 0) {this.growing_queue--;}
-			else {this.cells.shift();}
-		}
-    },
-
-	moveDown: function() {
-		var next_index_x = this.cells[this.cells.length-1][0];
-		var next_index_y = this.cells[this.cells.length-1][1] + 1;
-
-		if(this.checkNextCell(next_index_x, next_index_y)) {
-			this.cells[this.cells.length] = [next_index_x, next_index_y];
-			if(this.growing_queue > 0) {this.growing_queue--;}
-			else {this.cells.shift();}
-		}
-    },
-
-	moveUp: function() {
-		var next_index_x = this.cells[this.cells.length-1][0];
-		var next_index_y = this.cells[this.cells.length-1][1] - 1;
-
-		if(this.checkNextCell(next_index_x, next_index_y)) {
-			this.cells[this.cells.length] = [next_index_x, next_index_y];
-			if(this.growing_queue > 0) {this.growing_queue--;}
-			else {this.cells.shift();}
-		}	
-    },
-
-    checkNextCell: function(next_index_x, next_index_y) {
-        // out of bounds
-        if(next_index_x >= cellCount || next_index_y >= cellCount) {gameOver(); return 0;}
-        if(next_index_x < 0 || next_index_y < 0) {gameOver(); return 0;}
-
-        
-        // hit snake tail
-        var start = 1;
-        if (this.growing_queue > 0) {start = 0;}
-
-        for(i = start; i < this.cells.length; i++) {
-        	if(this.cells[i][0] == next_index_x && this.cells[i][1] == next_index_y) {
-        		gameOver();
-        		return 0;
-        	}
-        }
-
-
-        // hit food
-        if(grid.current[next_index_x][next_index_y] == 2) {
-        	this.growing_queue++;
-        	food.generateRandomPosition();
-        	return 1;
-        }
-        
-
-        // hit nothing
-        return 1;
-    }
-};
-
-// grid Object
-var grid = {
-	current: [],
-	nextIteration: [],
-	
-	fillGrids: function() {
-		for(index_x = 0; index_x < cellCount; index_x++) {
-			this.current[index_x] = [];
-			this.nextIteration[index_x] = [];
-			for(index_y = 0; index_y < cellCount; index_y++) {
-				this.current[index_x][index_y] = 0;
-				this.nextIteration[index_x][index_y] = 0;
-			}
-		}
-	},
-
-	drawGrid: function() {
-		var position_x;
-		var position_y;
-        
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // draw Grid from current array
-	    for(index_x = 0; index_x < cellCount; index_x++) {
-			for(index_y = 0; index_y < cellCount; index_y++) {
-				// if snake cell (value 1)
-	    		if(this.current[index_x][index_y] == 1) {
-	    			position_x = index_x*cellSize;
-	    			position_y = index_y*cellSize;
-	    			ctx.fillStyle = "green";
-	    			ctx.fillRect(position_x, position_y, cellSize, cellSize);
-	    		}
-	    		
-	    		// if food cell (value 2)
-	    		if(this.current[index_x][index_y] == 2) {
-	    			position_x = index_x*cellSize;
-	    			position_y = index_y*cellSize;
-	    			ctx.fillStyle = "red";
-	    			ctx.fillRect(position_x+8, position_y+8, cellSize-16, cellSize-16);
-	    		}
-	    	}
-	    }
-	    // clear Grid
-	    this.fillGrids();
-	}
-};
-
-// food Object
-var food = {
-	position: [0, 0],
-
-	generateRandomPosition: function() {
-        var random_index_x = Math.floor(Math.random()*cellCount);
-        var random_index_y = Math.floor(Math.random()*cellCount);
-        this.position = [random_index_x, random_index_y];
-	},
-    
-    exportPosition: function() {
-        grid.current[this.position[0]][this.position[1]] = 2;
-    }
-};
-
-// Main entry point for program
-function Main() {
-	// Add event listerners
-    document.addEventListener("keydown", keyDown);
-
-	canvas = document.getElementById("canvas_1");
-	ctx = canvas.getContext("2d");
-	
-	// calculate cellSize
-	cellSize = canvas.width/cellCount;
-	
-	grid.fillGrids();    // initial grid creation
-	food.generateRandomPosition();
-	food.exportPosition();
-	snake.exportSnake();
-	grid.drawGrid();
-
-
-	interval = setInterval(nextTick, 100);
-}
-
-function nextTick() {
-	food.exportPosition();
-	snake.move();
-	snake.exportSnake();
-	grid.drawGrid();
-	updateScore();
-}
-
-function updateScore() {
-    document.getElementById("title").innerHTML = snake.cells.length;
-}
-
-function gameOver() {
-	clearInterval(interval);
-    
-    setTimeout(gameOverText, 50);
-}
-
-function gameOverText() {
-	ctx.font = "30px Comic Sans MS";
-	ctx.textAlign = "center";
-	ctx.fillStyle = "red";
-    ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
-}
-
-// EVENTS
-function keyDown(e) {
-	if(e.keyCode == "37") {
-		snake.movement_direction = "left";
-	}
-
-	if(e.keyCode == "38") {
-		snake.movement_direction = "up";
-	}
-
-	if(e.keyCode == "39") {
-		snake.movement_direction = "right";
-	}
-
-	if(e.keyCode == "40") {
-		snake.movement_direction = "down";
-	}
-}
-
-</script>
-</head>
-
-<body>
-<center>
-<h1 id="title">SNAKE</h1>
-<canvas id="canvas_1" height="800px" width="800px"></canvas>
-</center>
-<script>Main();</script>
-</body>
-
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+  </body>
 </html>
