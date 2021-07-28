@@ -1,149 +1,35 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html>
+<html>
+<title>W3.CSS Template</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<style>
+body,h1 {font-family: "Raleway", sans-serif}
+body, html {height: 100%}
+.bgimg {
+  background-image: url('/w3images/forestbridge.jpg');
+  min-height: 100%;
+  background-position: center;
+  background-size: cover;
+}
+</style>
+<body>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+  <div class="w3-display-topleft w3-padding-large w3-xlarge">
+    Logo
+  </div>
+  <div class="w3-display-middle">
+    <h1 class="w3-jumbo w3-animate-top">COMING SOON</h1>
+    <hr class="w3-border-grey" style="margin:auto;width:40%">
+    <p class="w3-large w3-center">35 days left</p>
+  </div>
+  <div class="w3-display-bottomleft w3-padding-large">
+    Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a>
+  </div>
+</div>
 
-    <title>Magic Cards</title>
-  </head>
-  <body>
-
-    <div style="padding: 100px;">
-    <table class="table table-striped table-bordered">
-      <thead>
-        <tr>
-          <th scope="col">Number</th>
-          <th scope="col">Suit</th>
-        </tr>
-      </thead>
-      <tbody class="table-primary">
-        <tr>
-          <td>
-            <select name="number1" id="number1">
-              <option value="0">2</option>
-              <option value="1">3</option>
-              <option value="2">4</option>
-              <option value="3">5</option>
-              <option value="4">6</option>
-              <option value="5">7</option>
-              <option value="6">8</option>
-              <option value="7">9</option>
-              <option value="8">10</option>
-              <option value="9">Jack</option>
-              <option value="10">Queen</option>
-              <option value="11">King</option>
-              <option value="12">Ace</option>
-            </select>
-          </td>
-          <td>
-            <select name="suit1" id="suit1">
-              <option value="0">Clubs &clubs;</option>
-              <option value="1">Diamonds &diams;</option>
-              <option value="2">Hearts &hearts;</option>
-              <option value="3">Spades &spades;</option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <select name="number2" id="number2">
-              <option value="0">2</option>
-              <option value="1">3</option>
-              <option value="2">4</option>
-              <option value="3">5</option>
-              <option value="4">6</option>
-              <option value="5">7</option>
-              <option value="6">8</option>
-              <option value="7">9</option>
-              <option value="8">10</option>
-              <option value="9">Jack</option>
-              <option value="10">Queen</option>
-              <option value="11">King</option>
-              <option value="12">Ace</option>
-            </select>
-          </td>
-          <td>
-            <select name="suit2" id="suit2">
-              <option value="0">Clubs &clubs;</option>
-              <option value="1">Diamonds &diams;</option>
-              <option value="2">Hearts &hearts;</option>
-              <option value="3">Spades &spades;</option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <select name="number3" id="number3">
-              <option value="0">2</option>
-              <option value="1">3</option>
-              <option value="2">4</option>
-              <option value="3">5</option>
-              <option value="4">6</option>
-              <option value="5">7</option>
-              <option value="6">8</option>
-              <option value="7">9</option>
-              <option value="8">10</option>
-              <option value="9">Jack</option>
-              <option value="10">Queen</option>
-              <option value="11">King</option>
-              <option value="12">Ace</option>
-            </select>
-          </td>
-          <td>
-            <select name="suit3" id="suit3">
-              <option value="0">Clubs &clubs;</option>
-              <option value="1">Diamonds &diams;</option>
-              <option value="2">Hearts &hearts;</option>
-              <option value="3">Spades &spades;</option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <select name="number4" id="number4">
-              <option value="0">2</option>
-              <option value="1">3</option>
-              <option value="2">4</option>
-              <option value="3">5</option>
-              <option value="4">6</option>
-              <option value="5">7</option>
-              <option value="6">8</option>
-              <option value="7">9</option>
-              <option value="8">10</option>
-              <option value="9">Jack</option>
-              <option value="10">Queen</option>
-              <option value="11">King</option>
-              <option value="12">Ace</option>
-            </select>
-          </td>
-          <td>
-            <select name="suit4" id="suit4">
-              <option value="0">Clubs &clubs;</option>
-              <option value="1">Diamonds &diams;</option>
-              <option value="2">Hearts &hearts;</option>
-              <option value="3">Spades &spades;</option>
-            </select>
-          </td>
-        </tr>
-      </tbody>
-      <tfoot class=" table-secondary">
-        <tr>
-          <td id="txt1" style="text-align: center;" class="lead">-</td>
-          <td id="txt2" style="text-align: center;" class="lead">-</td>
-        </tr>
-        <tr>
-          <td colspan="2" style="background-color: white; text-align: center; padding: 0px;"><button type="button" class="btn btn-dark" style="width: 100%;" id="btn" onclick="buttonClicked()">Read my mind</button></td>
-        </tr>
-      </tfoot>
-    </table>
-    </div>
-    <a href="https://saschavii.github.io/subpage">LINK</a>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <script src="script.js"></script>
-  </body>
+</body>
 </html>
